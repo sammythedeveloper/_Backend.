@@ -6,7 +6,6 @@ const { StatusCodes } = require("http-status-codes");
 // sync function to send data to our database using json format which we used from express as a middleware
 
 const jwt = require("jsonwebtoken");
-
 async function register(req, res) {
   const { username, firstname, lastname, email, password } = req.body;
   if (!email || !password || !firstname || !lastname || !username) {
@@ -14,12 +13,10 @@ async function register(req, res) {
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "please provide all required information" });
   }
-
   //to avoid one user to register twice
-
   try {
     const [user] = await dbConnection.query(
-      "select username,userid from users where username =? or email=?",
+      "SELECT username, user_id FROM users WHERE username = ? OR email = ?",
       [username, email]
     );
     if (user.length > 0) {
@@ -27,9 +24,7 @@ async function register(req, res) {
         .status(StatusCodes.BAD_REQUEST)
         .json({ msg: "user already registered" });
     }
-
     //   to make the password strong
-
     if (password.length <= 8) {
       return res
         .status(StatusCodes.BAD_REQUEST)
@@ -46,7 +41,7 @@ async function register(req, res) {
       [username, firstname, lastname, email, hashedPassword]
     );
 
-    return res.status(StatusCodes.CREATED).json({ msg: "user register" });
+    return res.status(StatusCodes.CREATED).json({ msg: "User registered successfully"  });
   } catch (error) {
     console.log(error.message);
     return res
@@ -67,7 +62,7 @@ async function login(req, res) {
 
   try {
     const [user] = await dbConnection.query(
-      "select username,userid,password from users where email = ? ",
+      "SELECT username, user_id, password FROM users WHERE email = ?",
       [email]
     );
     if (user.length == 0) {

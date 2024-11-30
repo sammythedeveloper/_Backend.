@@ -2,7 +2,6 @@
 const dbConnection = require('../db/dbConfig')
 const { v4: uuidv4 } = require('uuid');
 const { StatusCodes } = require("http-status-codes");
-
 async function answerquestion(req, res) {
   const { userid, answer, questionid } = req.body;
   console.log(req.body);
